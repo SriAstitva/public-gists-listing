@@ -5,9 +5,13 @@ header .container-fluid {
     padding-top: 25px;
 }
 
+.main.container-fluid {
+	margin-bottom: 40px;
+}
+
 .gist-type.label {
 	top: -6px;
-    color: rgba(0,1,0,0.5);
+    color: rgba(0, 1, 0, 0.5);
     background: none;
     border: 1px #777 solid;
     position: relative;
@@ -36,10 +40,10 @@ header .container-fluid {
 }
 
 .grid {
-	background: rgba(0,0,0,0.01);
-    border: 1px solid rgba(0,0,0,0.1);
+	background: rgba(0, 0, 0, 0.01);
+    border: 1px solid rgba(0, 0, 0, 0.1);
     border-radius: 3px;
-    box-shadow: 0 0 7px rgba(0,0,0,0.1) inset;
+    box-shadow: 0 0 7px rgba(0, 0, 0, 0.1) inset;
 }
 
 .grid .box {
@@ -48,7 +52,13 @@ header .container-fluid {
     margin-bottom: 15px;
     padding: 10px 18px;
     border-radius: 3px;
-    border: 1px solid rgba(0,0,0,0.1);
+    border: 1px solid rgba(0, 0, 0, 0.1);
+    min-height: 190px;
+    word-break: break-word;
+}
+
+.grid .box:hover {
+	box-shadow: 0 0 20px rgba(0, 0, 0, 0.2);
 }
 
 /* MEDIA QUERIES */

@@ -21,7 +21,7 @@
 		</div>
 	</header>
 
-	<div class="container-fluid main">
+	<div class="container-fluid main" ng-app="publicGistsApp" ng-controller="publicGistsAppCtrl">
 		<div class="row filter">
 			<div class="input-group col-xs-8 pull-left">
 				<span class="input-group-btn">
@@ -35,53 +35,28 @@
 						</ul>
 					</div>
 				</span>
-				<input class="form-control" type="text" name="filter-key" placeholder="by Description">
+				<input class="form-control" type="text" name="filter-key" ng-model="filterKey" placeholder="by Description">
 			</div>
 			<div class="dropdown pull-right">
 				<button class="btn btn-default dropdown-toggle" type="button" id="sort-dropdown" data-toggle="dropdown" aria-haspopup="true" aria-expanded="true">Sort <span class="caret"></span>
 				</button>
 				<ul class="dropdown-menu" aria-labelledby="sort-dropdown">
-					<li><a href="#" class="active">Newest</a></li>
+					<li><a href="#" class="{{orderSeq ? '' : 'active'}}" ng-click="changeOrder(false)">Newest First</a></li>
 					<li role="separator" class="divider"></li>
-					<li><a href="#">Oldest</a></li>
+					<li><a href="#" class="{{orderSeq ? 'active' : ''}}" ng-click="changeOrder(true)">Oldest First</a></li>
 				</ul>
 			</div>
 		</div>
 
 		<div class="row grid">
-			<div class="col-md-4 col-sm-6">
+			<div class="col-md-4 col-sm-6" ng-repeat="gist in gists | filter : {'description' : filterKey} | orderBy : updated_at : orderSeq">
 				<div class="box">
-					<h5 class="owner link">SriAstitva</h5>
-					<h4 class="desc">Next Generation MM CMS</h4>
-					<h5 class="date text-muted">Updated on 21/08/1996</h5>
-					<a href="#" target="_blank" class="url">View Gist</a>
-				</div>
-			</div>
-
-			<div class="col-md-4 col-sm-6">
-				<div class="box">
-					<h5 class="owner link">SriAstitva</h5>
-					<h4 class="desc">Next Generation MM CMS</h4>
-					<h5 class="date text-muted">Updated on 21/08/1996</h5>
-					<a href="#" target="_blank" class="url">View Gist</a>
-				</div>
-			</div>
-
-			<div class="col-md-4 col-sm-6">
-				<div class="box">
-					<h5 class="owner link">SriAstitva</h5>
-					<h4 class="desc">Next Generation MM CMS</h4>
-					<h5 class="date text-muted">Updated on 21/08/1996</h5>
-					<a href="#" target="_blank" class="url">View Gist</a>
-				</div>
-			</div>
-
-			<div class="col-md-4 col-sm-6">
-				<div class="box">
-					<h5 class="owner link">SriAstitva</h5>
-					<h4 class="desc">Next Generation MM CMS</h4>
-					<h5 class="date text-muted">Updated on 21/08/1996</h5>
-					<a href="#" target="_blank" class="url">View Gist</a>
+					<h4 ng-if="gist.description">{{ gist.description }}</h4>
+					<h4 ng-if="!gist.description">No Description</h4>
+					<h5 ng-if="gist.owner.login">Owned by <strong>{{ gist.owner.login }}</strong></h5>
+					<h5 ng-if="!gist.owner.login">Owned by <strong>anonymous</strong></h5>
+					<h5 class="text-muted">Updated on {{ gist.updated_at | date : "dd/MM/yyyy" }}</h5>
+					<a href="{{ gist.html_url }}" target="_blank"><strong>View Gist</strong></a>
 				</div>
 			</div>
 		</div>
@@ -89,5 +64,21 @@
 
 	<script type="text/javascript" src="assets/js/jquery.js"></script>
 	<script type="text/javascript" src="assets/js/bootstrap.js"></script>
+	<script type="text/javascript" src="assets/js/angular.js"></script>
+	<script type="text/javascript">
+		var app = angular.module('publicGistsApp', []);
+		
+		app.controller('publicGistsAppCtrl', function($scope, $http) {
+			$http.get("http://localhost/logic-square/gists.json")
+			// $http.get("https://api.github.com/gists/public")
+			.then(function(response) {
+				$scope.gists = response.data;
+			});
+
+			$scope.changeOrder = function(order) {
+				$scope.orderSeq = order;
+			};
+		});
+	</script>
 </body>
 </html>
