@@ -27,6 +27,14 @@ header .container-fluid {
     border-right: none;
 }
 
+.dropdown .active {
+	font-weight: 600;
+}
+
+.dropdown .active:after {
+	content: "*";
+}
+
 .grid {
 	background: rgba(0,0,0,0.01);
     border: 1px solid rgba(0,0,0,0.1);
