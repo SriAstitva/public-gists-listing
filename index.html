@@ -21,34 +21,53 @@
 		</div>
 	</header>
 
+	<!-- MAIN APP CONTAINER -->
 	<div class="container-fluid main" ng-app="publicGistsApp" ng-controller="publicGistsAppCtrl">
+		
+		<!-- FILTER | SORT ROW -->
 		<div class="row filter">
+			
+			<!-- FILTER -->
 			<div class="input-group col-xs-8 pull-left">
 				<span class="input-group-btn">
 					<div class="dropdown">
 						<button class="btn btn-default dropdown-toggle" type="button" id="filter-dropdown" data-toggle="dropdown" aria-haspopup="true" aria-expanded="true">Filter <span class="caret"></span>
 						</button>
 						<ul class="dropdown-menu" aria-labelledby="filter-dropdown">
-							<li><a href="#" class="{{filterBy == 'Description' ? 'active' : ''}}" ng-click="changeFilter('Description')">Description</a></li>
+							<li>
+								<a href="#" class="{{filterBy == 'Description' ? 'active' : ''}}" ng-click="changeFilter('Description')">Description</a>
+							</li>
 							<li role="separator" class="divider"></li>
-							<li><a href="#" class="{{filterBy == 'Owner Login' ? 'active' : ''}}"" ng-click="changeFilter('Owner Login')">Owner Login</a></li>
+							<li>
+								<a href="#" class="{{filterBy == 'Owner Login' ? 'active' : ''}}"" ng-click="changeFilter('Owner Login')">Owner Login</a>
+							</li>
 						</ul>
 					</div>
 				</span>
+
 				<input class="form-control" type="text" name="filter-key" ng-model="filterKey.description" placeholder="by {{filterBy}}" ng-show="filterBy == 'Description' ? true : false" ng-change="clearDesc()">
+
 				<input class="form-control" type="text" name="filter-key" ng-model="filterKey.owner.login" placeholder="by {{filterBy}}" ng-show="filterBy == 'Owner Login' ? true : false" ng-change="clearLogin()">
 			</div>
+			<!-- END OF FILTER -->
+
+			<!-- SORT -->
 			<div class="dropdown pull-right">
 				<button class="btn btn-default dropdown-toggle" type="button" id="sort-dropdown" data-toggle="dropdown" aria-haspopup="true" aria-expanded="true">Sort <span class="caret"></span>
 				</button>
+				
 				<ul class="dropdown-menu" aria-labelledby="sort-dropdown">
 					<li><a href="#" class="{{orderSeq ? '' : 'active'}}" ng-click="changeOrder(false)">Newest First</a></li>
 					<li role="separator" class="divider"></li>
 					<li><a href="#" class="{{orderSeq ? 'active' : ''}}" ng-click="changeOrder(true)">Oldest First</a></li>
 				</ul>
 			</div>
-		</div>
+			<!-- END OF SORT -->
 
+		</div>
+		<!-- END OF FILTER | SORT ROW -->
+
+		<!-- TOP PAGER -->
 		<div class="row">
 			<nav aria-label="...">
 			  <ul class="pager">
@@ -61,20 +80,30 @@
 			  </ul>
 			</nav>
 		</div>
+		<!-- END OF TOP PAGER -->
 
+		<!-- GIST BOX GRID -->
 		<div class="row grid">
+
+			<!-- BOX -->
 			<div class="col-md-4 col-sm-6" ng-repeat="gist in gists | filter : filterKey ? filterKey : {} | orderBy : updated_at : orderSeq">
 				<div class="box">
 					<h4 ng-if="gist.description">{{ gist.description }}</h4>
 					<h4 ng-if="!gist.description">No Description</h4>
+
 					<h5 ng-if="gist.owner.login">Owned by <strong>{{ gist.owner.login }}</strong></h5>
 					<h5 ng-if="!gist.owner.login">Owned by <strong>anonymous</strong></h5>
+					
 					<h5 class="text-muted">Updated on {{ gist.updated_at | date : "dd/MM/yyyy" }}</h5>
 					<a href="{{ gist.html_url }}" target="_blank"><strong>View Gist</strong></a>
 				</div>
 			</div>
-		</div>
+			<!-- END OF BOX -->
 
+		</div>
+		<!-- END OF GIST BOX GRID -->
+
+		<!-- BOTTOM PAGER -->
 		<div class="row">
 			<nav aria-label="...">
 			  <ul class="pager">
@@ -87,7 +116,9 @@
 			  </ul>
 			</nav>
 		</div>
+		<!-- END OF BOTTOM PAGER -->
 	</div>
+	<!-- END OF MAIN APP CONTAINER -->
 
 	<script type="text/javascript" src="assets/js/jquery.js"></script>
 	<script type="text/javascript" src="assets/js/bootstrap.js"></script>

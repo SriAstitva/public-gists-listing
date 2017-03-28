@@ -1,3 +1,4 @@
+/* HEADER */
 header .container-fluid {
 	border-bottom: 1px solid #e1e4e8;
     background: #fafbfc;
@@ -16,7 +17,9 @@ header .container-fluid {
     border: 1px #777 solid;
     position: relative;
 }
+/* END OF HEADER */
 
+/* FILTER | SORT ROW */
 .filter.row {
 	margin-top: 20px;
 	margin-bottom: 20px;
@@ -38,7 +41,9 @@ header .container-fluid {
 .dropdown .active:after {
 	content: "*";
 }
+/* END OF FILTER | SORT ROW */
 
+/* GIST BOX GRID */
 .grid {
 	background: rgba(0, 0, 0, 0.01);
     border: 1px solid rgba(0, 0, 0, 0.1);
@@ -60,9 +65,13 @@ header .container-fluid {
 .grid .box:hover {
 	box-shadow: 0 0 20px rgba(0, 0, 0, 0.2);
 }
+/* END OF GIST BOX GRID */
 
 /* MEDIA QUERIES */
 @media (min-width: 768px) {
+	/* Clearfix for rows with two columns for small devices. 
+	 * It prevents random white spaces between grid boxes.
+	 */
 	.grid .col-md-4:nth-child(3n+4) {
 		clear: none;
 	}
@@ -78,6 +87,9 @@ header .container-fluid {
 		padding-right: 100px;
 	}
 
+	/* Clearfix for rows with three columns for medium and large devices. 
+	 * It prevents random white spaces between grid boxes.
+	 */
 	.grid .col-sm-6:nth-child(2n+3) {
 		clear: none;
 	}
