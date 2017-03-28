@@ -29,13 +29,14 @@
 						<button class="btn btn-default dropdown-toggle" type="button" id="filter-dropdown" data-toggle="dropdown" aria-haspopup="true" aria-expanded="true">Filter <span class="caret"></span>
 						</button>
 						<ul class="dropdown-menu" aria-labelledby="filter-dropdown">
-							<li><a href="#" class="active">Description</a></li>
+							<li><a href="#" class="{{filterBy == 'Description' ? 'active' : ''}}" ng-click="changeFilter('Description')">Description</a></li>
 							<li role="separator" class="divider"></li>
-							<li><a href="#">Owner Login</a></li>
+							<li><a href="#" class="{{filterBy == 'Owner Login' ? 'active' : ''}}"" ng-click="changeFilter('Owner Login')">Owner Login</a></li>
 						</ul>
 					</div>
 				</span>
-				<input class="form-control" type="text" name="filter-key" ng-model="filterKey" placeholder="by Description">
+				<input class="form-control" type="text" name="filter-key" ng-model="filterKey.description" placeholder="by {{filterBy}}" ng-show="filterBy == 'Description' ? true : false">
+				<input class="form-control" type="text" name="filter-key" ng-model="filterKey.owner.login" placeholder="by {{filterBy}}" ng-show="filterBy == 'Owner Login' ? true : false">
 			</div>
 			<div class="dropdown pull-right">
 				<button class="btn btn-default dropdown-toggle" type="button" id="sort-dropdown" data-toggle="dropdown" aria-haspopup="true" aria-expanded="true">Sort <span class="caret"></span>
@@ -49,7 +50,7 @@
 		</div>
 
 		<div class="row grid">
-			<div class="col-md-4 col-sm-6" ng-repeat="gist in gists | filter : {'description' : filterKey} | orderBy : updated_at : orderSeq">
+			<div class="col-md-4 col-sm-6" ng-repeat="gist in gists | filter : filterKey ? filterKey : '' | orderBy : updated_at : orderSeq">
 				<div class="box">
 					<h4 ng-if="gist.description">{{ gist.description }}</h4>
 					<h4 ng-if="!gist.description">No Description</h4>
@@ -69,11 +70,17 @@
 		var app = angular.module('publicGistsApp', []);
 		
 		app.controller('publicGistsAppCtrl', function($scope, $http) {
-			$http.get("http://localhost/logic-square/gists.json")
-			// $http.get("https://api.github.com/gists/public")
+			// $http.get("http://localhost/logic-square/extras/gists.json")
+			$http.get("https://api.github.com/gists/public")
 			.then(function(response) {
 				$scope.gists = response.data;
 			});
+
+			$scope.filterBy = 'Description';
+
+			$scope.changeFilter = function(filter) {
+				$scope.filterBy = filter;
+			};
 
 			$scope.changeOrder = function(order) {
 				$scope.orderSeq = order;
