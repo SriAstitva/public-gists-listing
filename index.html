@@ -35,8 +35,8 @@
 						</ul>
 					</div>
 				</span>
-				<input class="form-control" type="text" name="filter-key" ng-model="filterKey.description" placeholder="by {{filterBy}}" ng-show="filterBy == 'Description' ? true : false">
-				<input class="form-control" type="text" name="filter-key" ng-model="filterKey.owner.login" placeholder="by {{filterBy}}" ng-show="filterBy == 'Owner Login' ? true : false">
+				<input class="form-control" type="text" name="filter-key" ng-model="filterKey.description" placeholder="by {{filterBy}}" ng-show="filterBy == 'Description' ? true : false" ng-change="clearDesc()">
+				<input class="form-control" type="text" name="filter-key" ng-model="filterKey.owner.login" placeholder="by {{filterBy}}" ng-show="filterBy == 'Owner Login' ? true : false" ng-change="clearLogin()">
 			</div>
 			<div class="dropdown pull-right">
 				<button class="btn btn-default dropdown-toggle" type="button" id="sort-dropdown" data-toggle="dropdown" aria-haspopup="true" aria-expanded="true">Sort <span class="caret"></span>
@@ -49,8 +49,21 @@
 			</div>
 		</div>
 
+		<div class="row">
+			<nav aria-label="...">
+			  <ul class="pager">
+			    <li class="previous" ng-hide="pageNo <= 1">
+			    	<a href="#" ng-click="changePage(-1)"><span class="glyphicon glyphicon-chevron-left"></span> Newer</a>
+			    </li>
+			    <li class="next" ng-hide="pageNo >= 100">
+			    	<a href="#" ng-click="changePage(1)">Older <span class="glyphicon glyphicon-chevron-right"></span></a>
+			    </li>
+			  </ul>
+			</nav>
+		</div>
+
 		<div class="row grid">
-			<div class="col-md-4 col-sm-6" ng-repeat="gist in gists | filter : filterKey ? filterKey : '' | orderBy : updated_at : orderSeq">
+			<div class="col-md-4 col-sm-6" ng-repeat="gist in gists | filter : filterKey ? filterKey : {} | orderBy : updated_at : orderSeq">
 				<div class="box">
 					<h4 ng-if="gist.description">{{ gist.description }}</h4>
 					<h4 ng-if="!gist.description">No Description</h4>
@@ -61,29 +74,92 @@
 				</div>
 			</div>
 		</div>
+
+		<div class="row">
+			<nav aria-label="...">
+			  <ul class="pager">
+			    <li class="previous" ng-hide="pageNo == 1">
+			    	<a href="#" ng-click="changePage(-1)"><span class="glyphicon glyphicon-chevron-left"></span> Newer</a>
+			    </li>
+			    <li class="next" ng-hide="pageNo == 100">
+			    	<a href="#" ng-click="changePage(1)">Older <span class="glyphicon glyphicon-chevron-right"></span></a>
+			    </li>
+			  </ul>
+			</nav>
+		</div>
 	</div>
 
 	<script type="text/javascript" src="assets/js/jquery.js"></script>
 	<script type="text/javascript" src="assets/js/bootstrap.js"></script>
 	<script type="text/javascript" src="assets/js/angular.js"></script>
 	<script type="text/javascript">
+		// Initialization of the AngularJS App
 		var app = angular.module('publicGistsApp', []);
 		
+		// Binding the controller to the App
 		app.controller('publicGistsAppCtrl', function($scope, $http) {
-			// $http.get("http://localhost/logic-square/extras/gists.json")
+			// Fetching Gists API data
 			$http.get("https://api.github.com/gists/public")
 			.then(function(response) {
 				$scope.gists = response.data;
 			});
 
+			// Default field for Filtering
 			$scope.filterBy = 'Description';
 
+			/* This function clears the 'Description' filter when Filter Input field become blank.
+			 * This is required because not all Gists have 'Description' values so if this
+			 * function is not written, filter will load only those gists which have some value
+			 * in 'Description' property of Gist Object. It is called on changeEvent of Description Filter Input.
+			 */
+			$scope.clearDesc = function(){
+		        if($scope.filterKey.description.length == 0){
+		            delete $scope.filterKey.description;
+		        }
+		    };
+
+		    /* This function clears the 'Owner Login' filter when Filter Input field become blank.
+			 * This is required because all objects don't have Owner' propery so if this
+			 * function is not written, filter will load only those gists which have some value
+			 * in 'Owner' property defined in Gist Object. It is called on changeEvent of Owner
+			 * Login Filter Input.
+			 */
+		    $scope.clearLogin = function(){
+		        if($scope.filterKey.owner.login.length == 0){
+		            $scope.filterKey = {};
+		        }
+		    };
+
+		    /* This function is called to change the current filter field, it also clears all
+		     * the previous applied filters. When a filter is selected from the filter dropdown, it is
+		     * called.
+		     */
 			$scope.changeFilter = function(filter) {
 				$scope.filterBy = filter;
+				$scope.filterKey = {};
 			};
 
+			/* This function changes the order (Increasing or Decreasing) in which Gists will be sorted
+			 * based on the last updated date of Gists. 
+			 */
 			$scope.changeOrder = function(order) {
 				$scope.orderSeq = order;
+			};
+
+			// The initial page no. of API is 1
+			$scope.pageNo = 1;
+
+			/* This function changes the page no. of the API. According to the pager button clicked
+			 * (Previous or Next). On a single page, API provides 30 Gists.
+			 */
+			$scope.changePage = function(diff) {
+				$scope.pageNo = $scope.pageNo + diff;		// Update the page no.
+
+				// Refetch the API data according to the new page no.
+				$http.get("https://api.github.com/gists/public?page=" + $scope.pageNo)
+				.then(function(response) {
+					$scope.gists = response.data;
+				});
 			};
 		});
 	</script>
